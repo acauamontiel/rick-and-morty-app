@@ -1,5 +1,6 @@
 import {ApolloClient, createHttpLink, InMemoryCache} from '@apollo/client/core';
-export {DefaultApolloClient} from '@vue/apollo-composable';
+import {DefaultApolloClient, useQuery} from '@vue/apollo-composable';
+import gql from 'graphql-tag';
 
 const httpLink = createHttpLink({
 	uri: 'https://rickandmortyapi.com/graphql'
@@ -12,4 +13,43 @@ const apolloClient = new ApolloClient({
 	cache
 });
 
+export {DefaultApolloClient};
 export default apolloClient;
+
+export function getCharacterList(variables) {
+	return useQuery(gql`
+		query getCharacterList($page: Int, $name: String) {
+			characters(page: $page, filter: {name: $name}) {
+				info {
+					count
+					pages
+					next
+					prev
+				}
+				results {
+					id
+					name
+					image
+					gender
+					status
+					episode {
+						id
+						name
+						episode
+					}
+				}
+			}
+		}
+	`, variables);
+}
+
+export function getCharacter(id) {
+	return useQuery(gql`
+		query getCharacter($id: ID!) {
+			character(id: $id) {
+				name
+				image
+			}
+		}
+	`, {id});
+}

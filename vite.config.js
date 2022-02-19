@@ -1,7 +1,8 @@
 import {defineConfig} from 'vite';
-import path from 'path';
 import vue from '@vitejs/plugin-vue';
+import pugPlugin from 'vite-plugin-pug';
 import {quasar, transformAssetUrls} from '@quasar/vite-plugin';
+import path from 'path';
 
 export default defineConfig({
 	resolve: {
@@ -14,6 +15,7 @@ export default defineConfig({
 		vue({
 			template: {transformAssetUrls}
 		}),
-		quasar()
+		quasar(),
+		pugPlugin()
 	]
 });

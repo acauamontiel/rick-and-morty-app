@@ -1,21 +1,11 @@
-import {createApp, provide} from 'vue';
+import {createApp} from 'vue';
+import {Quasar} from 'quasar';
+import router from '@/router';
+import App from '@/App.vue';
 
-import {Quasar, useQuasar} from 'quasar';
-import '@quasar/extras/material-icons/material-icons.css';
-import 'quasar/src/css/index.sass';
+const app = createApp(App);
 
-import apolloClient, {DefaultApolloClient} from './apollo';
-import router from './router';
+app.use(Quasar);
+app.use(router);
 
-const myApp = createApp({
-	setup() {
-		const $q = useQuasar();
-		$q.dark.set(true);
-		provide(DefaultApolloClient, apolloClient);
-	}
-});
-
-myApp.use(Quasar);
-myApp.use(router);
-
-myApp.mount('#app');
+app.mount('#app');

@@ -2,6 +2,7 @@
 q-layout
 	q-page-container.q-pa-sm
 		router-view
+		p.text-center.text-caption.q-mt-xl © {{new Date().getFullYear()}} #[a.text-white(href='https://acauamontiel.com.br', target='_blank') Acauã Montiel]
 </template>
 
 <script>

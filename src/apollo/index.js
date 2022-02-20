@@ -23,19 +23,14 @@ export function getCharacterList(variables) {
 				info {
 					count
 					pages
-					next
-					prev
 				}
 				results {
 					id
 					name
 					image
 					gender
-					status
 					episode {
 						id
-						name
-						episode
 					}
 				}
 			}
@@ -47,8 +42,21 @@ export function getCharacter(id) {
 	return useQuery(gql`
 		query getCharacter($id: ID!) {
 			character(id: $id) {
+				id
 				name
 				image
+				gender
+				status
+				species
+				origin {
+					id
+					name
+				}
+				episode {
+					id
+					name
+					episode
+				}
 			}
 		}
 	`, {id});

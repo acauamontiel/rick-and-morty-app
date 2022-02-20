@@ -26,6 +26,9 @@ export default {
 </script>
 
 <style lang="stylus">
+html
+	scroll-behavior smooth
+
 .q-page-container
 	margin 0 auto
 	max-width 900px

@@ -6,6 +6,10 @@ const routes = [
 		component: () => import('@/views/Index.vue')
 	},
 	{
+		path: '/character/:id',
+		component: () => import('@/views/Character.vue')
+	},
+	{
 		path: '/:pathMatch(.*)',
 		redirect: '/'
 	}
@@ -13,7 +17,10 @@ const routes = [
 
 const router = createRouter({
 	history: createWebHashHistory(),
-	routes
+	routes,
+	scrollBehavior() {
+		return {top: 0};
+	}
 });
 
 export default router;

@@ -29,12 +29,13 @@ q-page
 			q-item(
 				v-for='character in characters',
 				:key='character.id',
+				:to='`/character/${character.id}`',
 				clickable,
 				v-ripple
 			)
 				q-item-section(avatar, top)
 					q-avatar(size='64px')
-						img(:src='character.image')
+						q-img(:src='character.image', loading='lazy')
 
 				q-item-section
 					q-item-label(lines='1') {{character.name}}
@@ -54,7 +55,7 @@ q-page
 			q-pagination(
 				v-model='params.page',
 				:max='info.pages',
-				max-pages='5',
+				:max-pages='5',
 				color='white',
 				active-text-color='black',
 				boundary-links,
@@ -96,6 +97,14 @@ export default {
 			doSearch,
 			clearSearch
 		};
+	},
+	watch: {
+		params: {
+			handler() {
+				window.scrollTo(0, 0);
+			},
+			deep: true
+		}
 	}
 };
 </script>

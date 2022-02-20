@@ -61,3 +61,22 @@ export function getCharacter(id) {
 		}
 	`, {id});
 }
+
+export function getEpisode(id) {
+	return useQuery(gql`
+		query getEpisode($id: ID!) {
+			episode(id: $id) {
+				id
+				name
+				episode
+				air_date
+				characters {
+					id
+					name
+					image
+					status
+				}
+			}
+		}
+	`, {id});
+}

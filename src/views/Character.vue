@@ -6,6 +6,7 @@ q-btn(
 )
 	q-icon.q-mr-sm(name='home')
 	| Back home
+
 q-spinner-ball(v-if='loading')
 q-page(v-else)
 	h3 {{character.name}}
@@ -47,13 +48,13 @@ q-page(v-else)
 
 	h5 Episodes
 
-	q-list.rounded-borders(
+	q-list.q-list--intern.rounded-borders(
 		bordered,
-		separator,
-		style='max-width: 400px'
+		separator
 	)
 		q-item(
 			v-for='episode in character.episode',
+			:to='`/episode/${episode.id}`',
 			clickable,
 			v-ripple
 		)

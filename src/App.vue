@@ -38,4 +38,7 @@ html
 	margin 50px auto 0
 	width 50px
 	height @width
+
+.q-list--intern
+	max-width 400px
 </style>

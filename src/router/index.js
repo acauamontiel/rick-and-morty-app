@@ -10,6 +10,10 @@ const routes = [
 		component: () => import('@/views/Character.vue')
 	},
 	{
+		path: '/episode/:id',
+		component: () => import('@/views/Episode.vue')
+	},
+	{
 		path: '/:pathMatch(.*)',
 		redirect: '/'
 	}

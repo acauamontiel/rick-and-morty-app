@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/rick-and-morty-app/sw.js', { scope: '/rick-and-morty-app/' })})}

@@ -2,10 +2,10 @@
 q-page
 	h4.text-center Rick and Morty App
 
-	q-form(@submit.prevent='doSearch')
+	q-form(@submit.prevent='onSubmitSearch')
 		q-input(
 			v-model='search'
-			@clear='doSearch',
+			@clear='onSubmitSearch',
 			label='Search'
 			placeholder='Search for a character'
 			clearable,
@@ -13,10 +13,65 @@ q-page
 			outlined
 		)
 
-	.flex.flex-center.q-mt-md
+	.q-my-lg
 		q-btn(
-			v-if='params.name',
-			@click='clearSearch',
+			@click='filtersToggle = !filtersToggle',
+			size='sm'
+		)
+			q-icon.q-mr-xs(name='filter_alt')
+			| Toggle filter
+
+		.q-mt-md(v-if='filtersToggle')
+			.q-gutter-sm.flex.items-center
+				label.text-caption Status:
+				q-radio(
+					v-model='filters.status',
+					val='alive',
+					checked-icon='favorite',
+					label='Alive'
+				)
+				q-radio(
+					v-model='filters.status',
+					val='dead',
+					checked-icon='favorite_border',
+					label='Dead'
+				)
+				q-radio(
+					v-model='filters.status',
+					val='unknown',
+					checked-icon='question_mark',
+					label='Unknown'
+				)
+			.q-gutter-sm.flex.items-center
+				label.text-caption Gender:
+				q-radio(
+					v-model='filters.gender',
+					val='male',
+					checked-icon='male',
+					label='Male'
+				)
+				q-radio(
+					v-model='filters.gender',
+					val='female',
+					checked-icon='female',
+					label='Female'
+				)
+				q-radio(
+					v-model='filters.gender',
+					val='genderless',
+					checked-icon='transgender',
+					label='Genderless'
+				)
+				q-radio(
+					v-model='filters.gender',
+					val='unknown',
+					checked-icon='question_mark',
+					label='Unknown'
+				)
+
+	.flex.flex-center.q-mt-md(v-if='hasQuery')
+		q-btn(
+			@click='clearParams',
 			size='sm',
 			outline
 		) Clear search
@@ -54,6 +109,7 @@ q-page
 		.flex.flex-center.q-my-md
 			q-pagination(
 				v-model='params.page',
+				@update:model-value='updatePage',
 				:max='info.pages',
 				:max-pages='5',
 				color='white',
@@ -65,27 +121,70 @@ q-page
 </template>
 
 <script>
-import {ref} from 'vue';
+import {ref, computed} from 'vue';
+import {useRoute, useRouter} from 'vue-router';
 import {useResult} from '@vue/apollo-composable';
 import {getCharacterList} from '@/apollo';
 
 export default {
 	setup() {
-		const search = ref(''),
-			params = ref({page: 1, name: ''}),
+		const route = useRoute(),
+			router = useRouter(),
+			search = ref(''),
+			filtersToggle = ref(false),
+			filters = ref({
+				status: null,
+				gender: null
+			}),
+			params = ref({
+				page: 1,
+				name: null,
+				status: null,
+				gender: null
+			}),
 			{result, loading, error} = getCharacterList(params),
 			info = useResult(result, null, data => data.characters.info),
-			characters = useResult(result, null, data => data.characters.results);
+			characters = useResult(result, null, data => data.characters.results),
+			hasQuery = computed(() => route.query.name || route.query.status || route.query.gender);
 
-		function doSearch() {
-			params.value.name = search.value;
-			params.value.page = 1;
+		function setParams() {
+			search.value = route.query?.name;
+			params.value.name = route.query?.name;
+			params.value.status = route.query?.status;
+			params.value.gender = route.query?.gender;
+			params.value.page = parseInt(route.query?.page) || 1;
+			filtersToggle.value = route.query.status || route.query.gender;
+			filters.value.status = route.query?.status;
+			filters.value.gender = route.query?.gender;
 		}
 
-		function clearSearch() {
-			search.value = '';
-			doSearch();
+		function clearParams() {
+			filtersToggle.value = false;
+			search.value = null;
+			router.push({name: 'index'});
 		}
+
+		function pushRoute(page = 1) {
+			router.push({
+				name: 'index',
+				query: {
+					page: page,
+					name: search.value,
+					status: route.query.status,
+					gender: route.query.gender
+				}
+			});
+		}
+
+		function onSubmitSearch() {
+			pushRoute();
+		}
+
+		function updatePage(page) {
+			pushRoute(page);
+		}
+
+		setParams();
 
 		return {
 			search,
@@ -94,14 +193,40 @@ export default {
 			characters,
 			loading,
 			error,
-			doSearch,
-			clearSearch
+			filtersToggle,
+			filters,
+			hasQuery,
+			setParams,
+			clearParams,
+			onSubmitSearch,
+			updatePage
 		};
 	},
 	watch: {
+		$route(to) {
+			if (to.name !== 'index') {
+				return;
+			}
+
+			this.setParams();
+		},
 		params: {
 			handler() {
 				window.scrollTo(0, 0);
+			},
+			deep: true
+		},
+		filters: {
+			handler(filters) {
+				this.$router.push({
+					name: 'index',
+					query: {
+						page: 1,
+						name: this.params.name,
+						status: filters.status,
+						gender: filters.gender
+					}
+				});
 			},
 			deep: true
 		}

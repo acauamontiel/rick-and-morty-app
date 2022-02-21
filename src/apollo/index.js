@@ -18,8 +18,12 @@ export default apolloClient;
 
 export function getCharacterList(variables) {
 	return useQuery(gql`
-		query getCharacterList($page: Int, $name: String) {
-			characters(page: $page, filter: {name: $name}) {
+		query getCharacterList($page: Int, $name: String, $status: String, $gender: String) {
+			characters(page: $page, filter: {
+				name: $name
+				status: $status
+				gender: $gender
+			}) {
 				info {
 					count
 					pages

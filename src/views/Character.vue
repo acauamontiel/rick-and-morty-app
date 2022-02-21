@@ -22,7 +22,7 @@ q-page(v-else)
 				| Status: {{character.status}}
 			p(v-if='character.gender !== "unknown"')
 				q-icon.q-mr-sm(
-					:name='character.gender.toLowerCase()',
+					:name='getGenderIcon(character.gender)',
 					size='sm'
 				)
 				| Gender: {{character.gender}}
@@ -44,7 +44,6 @@ q-page(v-else)
 					size='sm'
 				)
 				| Episodes: {{character.episode.length}}
-
 
 	h5 Episodes
 
@@ -68,6 +67,7 @@ import {computed} from 'vue';
 import {useRoute} from 'vue-router';
 import {useResult} from '@vue/apollo-composable';
 import {getCharacter} from '@/apollo';
+import {getGenderIcon} from '@/utils';
 
 export default {
 	setup() {
@@ -79,7 +79,8 @@ export default {
 		return {
 			id,
 			character,
-			loading
+			loading,
+			getGenderIcon
 		};
 	}
 };

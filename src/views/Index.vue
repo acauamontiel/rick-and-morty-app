@@ -102,7 +102,7 @@ q-page
 				q-item-section(side)
 					q-icon(
 						v-if='character.gender !== "unknown"',
-						:name='character.gender.toLowerCase()',
+						:name='getGenderIcon(character.gender)',
 						size='sm'
 					)
 
@@ -125,6 +125,7 @@ import {ref, computed} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import {useResult} from '@vue/apollo-composable';
 import {getCharacterList} from '@/apollo';
+import {getGenderIcon} from '@/utils';
 
 export default {
 	setup() {
@@ -199,7 +200,8 @@ export default {
 			setParams,
 			clearParams,
 			onSubmitSearch,
-			updatePage
+			updatePage,
+			getGenderIcon
 		};
 	},
 	watch: {
